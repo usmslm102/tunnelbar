@@ -1,11 +1,12 @@
 # Release checklist
 
 The source repository is public, while the app remains a development preview.
-This checklist covers binary release acceptance and does not publish anything
-automatically; repository visibility, website hosting, and releases are separate
-maintainer actions.
+Tag pushes publish binaries automatically through GitHub Actions. Development
+previews may be published while the manual acceptance checks below remain open;
+keep their limitations explicit in the release notes. Complete these checks before
+claiming a stable production release.
 
-Before the first public release:
+Before a stable release:
 
 - Review the source and full Git history for credentials and private data.
 - Confirm the MIT license, copyright attribution, name, and bundle identifier.
@@ -38,5 +39,28 @@ Before the first public release:
   are optional future improvements, not a merge or release prerequisite.
 - Publish architecture-labelled artifacts and checksums only after validation.
 
-CI uploads a short-lived development artifact. It does not create a GitHub release,
-change visibility, use signing secrets, or run a public tunnel.
+## Publish a release
+
+1. Update `CFBundleShortVersionString` and `CFBundleVersion` in
+   `Resources/Info.plist`, and update `docs/RELEASE_NOTES.md` for the release.
+2. Merge the changes into `main` and check CI.
+3. Tag that commit and push the tag, for example:
+
+   ```sh
+   git tag -a v1.0.0-preview.1 -m "TunnelBar 1.0.0 development preview 1"
+   git push origin v1.0.0-preview.1
+   ```
+
+The Release workflow checks that the tag matches the plist version, runs unit and
+process lifecycle tests, builds Universal 2 binaries, verifies signatures and both
+architecture slices, and publishes the ZIP, SHA-256 checksum, and MIT license.
+A suffix in the tag makes a GitHub prerelease; an unsuffixed tag creates a normal
+release. The workflow does not run public tunnels or require signing secrets.
+Never move a published tag; fix a failed build before publishing a new version.
+If publication fails before creating the release, rerun the failed job. If a
+release already exists, inspect its assets before changing or replacing anything.
+
+After a successful Release run, the Static site workflow deploys GitHub Pages with
+the published ZIP. Site changes on `main` also redeploy using the existing release.
+Use the Static site workflow's manual dispatch to retry deployment. CI continues
+to upload short-lived development artifacts independently of release publishing.

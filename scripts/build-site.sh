@@ -4,23 +4,31 @@ cd "$(dirname "$0")/.."
 
 # Build only a local bundle. This script never enables Pages, creates a release,
 # changes repository visibility, or uploads the site.
-bash scripts/build-app.sh
 site_path="$PWD/dist/site"
 mkdir -p "$site_path/assets" "$site_path/downloads"
 cp site/index.html site/styles.css site/app.js "$site_path/"
 cp site/assets/*.svg site/assets/*.png "$site_path/assets/"
-
-architectures="$(lipo -archs dist/TunnelBar.app/Contents/MacOS/TunnelBar)"
-if [[ "$architectures" == *arm64* && "$architectures" == *x86_64* ]]; then
-    arch=universal
-else
-    arch="$architectures"
-fi
-
-archive="TunnelBar-macOS-${arch}.zip"
 # Downloads are generated artifacts. Never carry older binaries into a new site.
 rm -f "$site_path"/downloads/TunnelBar-macOS-*.zip "$site_path"/downloads/TunnelBar-macOS-*.zip.sha256
-ditto -c -k --sequesterRsrc --keepParent dist/TunnelBar.app "$site_path/downloads/$archive"
+if [[ -n "${TUNNELBAR_DOWNLOAD_ARCHIVE:-}" ]]; then
+    # Pages reuses the verified release archive without rebuilding the app.
+    archive="$(basename "$TUNNELBAR_DOWNLOAD_ARCHIVE")"
+    case "$archive" in
+        TunnelBar-macOS-universal.zip) arch=universal ;;
+        *) echo "Expected a Universal 2 release archive" >&2; exit 1 ;;
+    esac
+    cp "$TUNNELBAR_DOWNLOAD_ARCHIVE" "$site_path/downloads/$archive"
+else
+    bash scripts/build-app.sh
+    architectures="$(lipo -archs dist/TunnelBar.app/Contents/MacOS/TunnelBar)"
+    if [[ "$architectures" == *arm64* && "$architectures" == *x86_64* ]]; then
+        arch=universal
+    else
+        arch="$architectures"
+    fi
+    archive="TunnelBar-macOS-${arch}.zip"
+    ditto -c -k --sequesterRsrc --keepParent dist/TunnelBar.app "$site_path/downloads/$archive"
+fi
 cp LICENSE "$site_path/downloads/LICENSE.txt"
 
 python3 - "$site_path" <<'PY'

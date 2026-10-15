@@ -2,7 +2,7 @@
 
 A native **Cloudflared Tunnel UI for macOS**, built with SwiftUI and AppKit. Share a local HTTP service through an email-protected link, view your account tunnels, and stop sharing from the menu bar.
 
-Development preview: the source is open under the MIT license; no public binary release has been tagged. This is an independent project, not affiliated with or endorsed by Cloudflare. Cloudflared is installed separately and remains under its own license.
+Development preview: the source is open under the MIT license; Universal 2 preview downloads are available from [GitHub Releases](https://github.com/usmslm102/cloudflared-macos/releases). This is an independent project, not affiliated with or endorsed by Cloudflare. Cloudflared is installed separately and remains under its own license.
 
 ## Requirements
 
@@ -84,7 +84,7 @@ Cloudflare references: [Quick Tunnels and email gates](https://developers.cloudf
 
 ## Static website
 
-The unpublished landing page lives in [`site/`](site/README.md). Build a standalone
+The landing page lives in [`site/`](site/README.md). Build a standalone
 site bundle with an actual development download for the host Mac:
 
 ```sh
@@ -92,9 +92,11 @@ bash scripts/build-site.sh
 open dist/site/index.html
 ```
 
-No hosting, Pages deployment, or public release is enabled. The output includes
-relative download links and SHA-256 checksums. See the site README for preview
-and multi-architecture packaging instructions.
+GitHub Pages deploys the site after successful releases and site changes on `main`.
+Its download buttons serve the published Universal 2 release and SHA-256 checksum.
+Tag pushes matching `v*` run tests, verify both architectures and signatures, and
+publish a GitHub release. Tags with a suffix such as `v1.0.0-preview.1` are marked
+as prereleases. See [release instructions](docs/RELEASING.md) and the site README.
 
 ## Contributing and security
 

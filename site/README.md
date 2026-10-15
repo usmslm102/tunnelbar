@@ -56,12 +56,22 @@ These are ad-hoc signed development builds, not notarized public releases.
 
 ## Publication
 
-Nothing in this project deploys the site, enables GitHub Pages, uploads a release,
-or changes repository visibility. CI includes the static files in its
-development artifact only; public source availability does not publish a website
-or create a stable binary release.
+`.github/workflows/pages.yml` deploys GitHub Pages after a successful Release
+workflow, changes to site sources on `main`, or a manual workflow dispatch.
+It downloads the most recently created published release (including previews),
+verifies its checksum, and packages that exact ZIP with the static site. It never
+builds a different app for the public download. Until a release exists, deployment
+is skipped. GitHub Pages must have its source set to **GitHub Actions**.
 
-When publishing is explicitly requested later, host the contents of `dist/site/`
-with the relative directory structure intact, review the pre-release copy, and
-complete `docs/RELEASING.md`. A private Git repository alone does not make a hosted
-website private; choose the hosting audience explicitly.
+The Pages job has read-only repository access; only the deployment job receives
+Pages write and OIDC permissions. No custom token or Apple signing secrets are
+required. Existing Pages domain settings are preserved. All links remain relative
+so the site works at a repository subpath.
+
+To assemble a site locally using an existing verified release ZIP:
+
+```sh
+TUNNELBAR_DOWNLOAD_ARCHIVE=/absolute/path/TunnelBar-macOS-universal.zip ./scripts/build-site.sh
+```
+
+The local script only writes `dist/site/`; publishing happens in GitHub Actions.
