@@ -70,6 +70,20 @@ CI runs offline tests, builds and verifies the app bundle, and uploads a develop
 
 Cloudflare references: [Quick Tunnels and email gates](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/), [named tunnels](https://developers.cloudflare.com/tunnel/get-started/).
 
+## Static website
+
+The unpublished landing page lives in [`site/`](site/README.md). Build a standalone
+site bundle with an actual development download for the host Mac:
+
+```sh
+bash scripts/build-site.sh
+open dist/site/index.html
+```
+
+No hosting, Pages deployment, or public release is enabled. The output includes
+relative download links and SHA-256 checksums. See the site README for preview
+and multi-architecture packaging instructions.
+
 ## Contributing and security
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development and pull request guidance, [SECURITY.md](SECURITY.md) for vulnerability reporting and security boundaries, and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.

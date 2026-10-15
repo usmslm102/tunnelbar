@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="TunnelBar is a native macOS menu bar app for sharing localhost through email-protected cloudflared links.">
+  <meta name="theme-color" content="#eaf0e7">
+  <title>TunnelBar — Localhost, a little further.</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="download-config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="header">
+    <a class="wordmark" href="#" aria-label="TunnelBar home"><img src="assets/icon.svg" alt="" width="29" height="29"> TunnelBar</a>
+    <nav aria-label="Main navigation">
+      <a href="#how-it-works">How it works</a>
+      <a href="https://github.com/usmslm102/cloudflared-macos">GitHub <span aria-hidden="true">↗</span></a>
+      <a class="nav-download" href="#download">Get the app <span aria-hidden="true">↓</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="hero-top"><span class="eyebrow"><span class="status-dot"></span> A native macOS menu bar app</span><span class="release-label">In development · v1.0</span></div>
+        <h1 id="hero-title">TunnelBar<span class="brand-period">.</span></h1>
+        <div class="hero-content">
+          <div class="hero-copy">
+            <h2>Localhost,<br>a little further.</h2>
+            <p>Share a local port with the people you choose.<br class="desktop-break"> An email-protected link, right from your menu bar.</p>
+            <div class="hero-actions"><a class="button button-dark" href="#download">Get TunnelBar <span aria-hidden="true">↓</span></a><a class="text-link" href="#how-it-works">Take a look <span aria-hidden="true">↘</span></a></div>
+            <p class="hero-note">macOS 13+ · Bring your own cloudflared</p>
+          </div>
+          <figure class="product-figure">
+            <div class="menu-bar" aria-hidden="true"><span>Thu 9:41 AM</span><span class="menu-active"><img src="assets/network.svg" alt="" width="17" height="17"></span><span>◒</span><span>⌕</span></div>
+            <div class="app-preview">
+              <div class="app-header"><img src="assets/network.svg" alt="" width="25" height="25"><div><strong>TunnelBar</strong><small>Localhost, a little further.</small></div><span class="app-gear" aria-hidden="true">⚙</span></div>
+              <div class="preview-tabs" role="tablist" aria-label="Explore the illustrated app preview">
+                <button id="share-tab" role="tab" aria-selected="true" aria-controls="share-preview" tabindex="0">Share a port</button>
+                <button id="account-tab" role="tab" aria-selected="false" aria-controls="account-preview" tabindex="-1">Your tunnels</button>
+              </div>
+              <div id="share-preview" class="preview-content" role="tabpanel" aria-labelledby="share-tab" tabindex="0">
+                <div class="mock-fields" aria-hidden="true">
+                  <strong>Share a local port</strong>
+                  <div class="mock-port"><span>localhost:</span><span class="mock-input mono">3000</span><span class="mock-protocol">HTTP</span></div>
+                  <span class="mock-label"><img src="assets/lock.svg" alt="" width="14" height="14"> Email gate</span>
+                  <span class="mock-input mock-email">alex@example.com</span>
+                  <small>Only these people can enter, using an email code.</small>
+                  <span class="mock-button">＋ Create protected link</span>
+                  <div class="mock-connected"><span class="status-dot"></span><strong>:3000</strong><span>Connected</span><span class="mock-stop">Stop</span></div>
+                  <span class="mock-url mono">your-link.trycloudflare.com <span>⧉</span></span>
+                </div>
+                <span class="sr-only">Illustration: local port 3000, an email allowlist, and a connected protected tunnel.</span>
+              </div>
+              <div id="account-preview" class="preview-content" role="tabpanel" aria-labelledby="account-tab" tabindex="0" hidden>
+                <div class="mock-fields" aria-hidden="true"><strong>Account tunnels</strong><small>All your named tunnels, at a glance.</small><div class="mock-tunnel"><span class="status-dot"></span><div><strong>studio-preview</strong><small>Connected</small></div><span>⧉</span></div><div class="mock-tunnel"><span class="status-dot muted-dot"></span><div><strong>weekend-project</strong><small>Inactive</small></div><span>⧉</span></div><span class="mock-dashboard">Manage named tunnels ↗</span><div class="mock-account-note">Sign in with cloudflared to view your account. Quick shares work without an account.</div></div>
+                <span class="sr-only">Illustration: two named account tunnels, one connected and one inactive.</span>
+              </div>
+              <div class="app-footer"><span class="status-dot"></span> Ready when you are.<span class="mono">⌘</span></div>
+            </div>
+            <figcaption>Illustrated app preview · example data</figcaption>
+          </figure>
+        </div>
+        <div class="hero-bottom"><span>Less terminal. More sharing.</span><a href="#how-it-works" aria-label="Explore how TunnelBar works">Scroll to explore <span aria-hidden="true">↓</span></a></div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="workflow section-wrap" aria-labelledby="workflow-title">
+      <div class="section-intro reveal"><span class="eyebrow">A shorter route to sharing</span><h2 id="workflow-title">Your next demo.<br>Three small steps.</h2><p>Keep your app running locally.<br>TunnelBar takes care of the link.</p></div>
+      <ol class="steps">
+        <li class="reveal"><span class="step-number mono">01</span><div><h3>Pick your port.</h3><p>Your site on :3000. Your prototype on :8080. Enter the port your local HTTP service is using.</p></div><span class="step-glyph mono" aria-hidden="true">:</span></li>
+        <li class="reveal"><span class="step-number mono">02</span><div><h3>Choose your people.</h3><p>Add their email addresses. Visitors need a one-time code sent to an allowed email before they can enter.</p></div><img class="step-icon" src="assets/lock.svg" alt="" width="27" height="27"></li>
+        <li class="reveal"><span class="step-number mono">03</span><div><h3>Send the link. That’s it.</h3><p>Copy your temporary URL. Keep TunnelBar open while sharing, then hit Stop when you’re done.</p></div><span class="step-glyph" aria-hidden="true">↗</span></li>
+      </ol>
+    </section>
+
+    <section class="details-section" aria-labelledby="details-title">
+      <div class="section-wrap details-inner">
+        <div class="details-heading reveal"><span class="eyebrow">Small by design</span><h2 id="details-title">A good neighbor<br>in your menu bar.</h2><span class="connection-line mono" aria-hidden="true">localhost <span>────</span> ◈ <span>────</span> your people</span></div>
+        <div class="details-list">
+          <div class="reveal"><h3>Feels right at home.</h3><p>Built with SwiftUI and AppKit. Native controls, no Dock icon, and your tunnels a click away.</p></div>
+          <div class="reveal"><h3>Private by invitation.</h3><p>Every new share uses an email gate. Quick shares need no Cloudflare account or API token.</p></div>
+          <div class="reveal"><h3>A little less repetition.</h3><p>Reuse recent port and email settings. View account tunnels, connection status, and logs without juggling terminals.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="download" class="download-section" aria-labelledby="download-title">
+      <div class="section-wrap">
+        <div class="download-heading reveal"><div><span class="eyebrow">Make a little connection</span><h2 id="download-title">Localhost is ready<br>for company.</h2></div><img src="assets/network.svg" class="download-symbol" alt="" width="100" height="100"></div>
+        <p class="download-summary">Development builds for macOS 13 and later. Cloudflared is installed separately.</p>
+        <div class="downloads">
+          <div class="download-option"><span class="platform-icon" aria-hidden="true">⌘</span><h3>Apple silicon</h3><p>M-series Macs · arm64</p><a class="button button-light" data-platform="arm64" href="https://github.com/usmslm102/cloudflared-macos#open-the-app">Build from source <span aria-hidden="true">↗</span></a><span class="download-meta" data-meta="arm64">No packaged build included in this source preview.</span></div>
+          <div class="download-option"><span class="platform-icon intel-icon mono" aria-hidden="true">i</span><h3>Intel</h3><p>Intel-based Macs · x86_64</p><a class="button button-outline" data-platform="x86_64" href="https://github.com/usmslm102/cloudflared-macos#open-the-app">Build from source <span aria-hidden="true">↗</span></a><span class="download-meta" data-meta="x86_64">Build on an Intel Mac to package this version.</span></div>
+        </div>
+        <div class="release-notice"><span class="notice-marker" aria-hidden="true">↳</span><p><strong>A work in progress.</strong> These are locally signed development builds, not notarized public releases. Browser email delivery is still awaiting full end-to-end verification. The repository and GitHub downloads currently require authorized access.</p></div>
+        <div class="source-row"><span>Prefer to build it yourself?</span><a href="https://github.com/usmslm102/cloudflared-macos">Explore the source on GitHub <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </section>
+
+    <section class="setup section-wrap" aria-labelledby="setup-title">
+      <div class="setup-intro"><span class="eyebrow">A quick heads-up</span><h2 id="setup-title">Before your first share.</h2><p>Already have cloudflared? You’re most of the way there.</p></div>
+      <div class="setup-content">
+        <div class="setup-install"><h3>Check your cloudflared.</h3><p>TunnelBar needs a version with <code>--allowed-mail</code> support. The app checks this when it starts.</p><div class="code-block"><code id="install-command">cloudflared tunnel --help</code><button id="copy-command" aria-label="Copy cloudflared help command">Copy <span aria-hidden="true">⧉</span></button></div><p id="copy-status" class="copy-status" role="status" aria-live="polite"></p><a class="text-link" href="https://developers.cloudflare.com/tunnel/downloads/">Cloudflare installation guide ↗</a></div>
+        <details><summary>How do I install a downloaded build?</summary><p>Unzip the archive, move TunnelBar.app to Applications, and open it. Look for the network icon in your menu bar. Install cloudflared separately if you don’t have it yet. These development builds are not notarized; if macOS prevents opening one, you can build from the source instructions instead.</p></details>
+        <details><summary>What happens to my link when I stop?</summary><p>Quick Tunnel URLs are temporary. Stop ends the connector, and restarting creates a new URL. Normal Quit stops shares created by TunnelBar. Force-quitting or a crash can leave a child process running; check Activity Monitor after an abnormal exit.</p></details>
+        <details><summary>Can I manage my existing named tunnels?</summary><p>You can sign in through cloudflared to list account tunnels and see their connection status. Routing, Access policies, and starting or stopping named tunnels are managed separately in Cloudflare.</p></details>
+        <details><summary>What stays on my Mac?</summary><p>Recent ports and email allowlists are saved locally in macOS UserDefaults. You can clear recent shares in Settings. TunnelBar stores no API tokens and has no app telemetry. Cloudflare handles tunnel traffic and email authentication.</p></details>
+        <details><summary>Is this ready for production traffic?</summary><p>This is early-stage software, and Cloudflare Quick Tunnels are intended for testing and development. Full browser authentication and email-delivery checks remain pending. Use named tunnels and appropriate Access policies for stable production routing.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer section-wrap"><a class="wordmark" href="#"><img src="assets/icon.svg" alt="" width="25" height="25"> TunnelBar</a><p>A little app by <a href="https://github.com/usmslm102">Usama Ansari</a>.<br>Independent of Cloudflare. MIT licensed.</p><div><a href="https://github.com/usmslm102/cloudflared-macos/blob/main/SECURITY.md">Security</a><a href="https://github.com/usmslm102/cloudflared-macos/blob/main/LICENSE">License</a><a href="https://github.com/usmslm102/cloudflared-macos">GitHub ↗</a></div></footer>
+  <noscript><p class="noscript-note">JavaScript is optional for reading this page. For packaged downloads, open the downloads folder included with the site bundle. GitHub source links remain available above.</p></noscript>
+</body>
+</html>
