@@ -2,7 +2,7 @@
 
 A native **Cloudflared Tunnel UI for macOS**, built with SwiftUI and AppKit. Share a local HTTP service through an email-protected link, view your account tunnels, and stop sharing from the menu bar.
 
-The source is open under the MIT license; Universal 2 downloads are available from [GitHub Releases](https://github.com/usmslm102/cloudflared-macos/releases). This is an independent project, not affiliated with or endorsed by Cloudflare. Cloudflared is installed separately and remains under its own license.
+The source is open under the MIT license; Universal 2 downloads are available from [GitHub Releases](https://github.com/usmslm102/TunnelBar/releases). This is an independent project, not affiliated with or endorsed by Cloudflare. Cloudflared is installed separately and remains under its own license.
 
 ## Requirements
 
