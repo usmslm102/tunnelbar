@@ -21,8 +21,9 @@ using `scripts/check-site.py`. Packaging requires Python 3.9 or later.
 
 The source page at `site/index.html` works directly too. Without generated build
 metadata it links to source-build instructions instead of claiming a nonexistent
-binary is downloadable. The app illustration uses example data and is labelled
-as an illustration, not a screenshot or a real active connection.
+binary is downloadable. The hero uses the supplied native macOS app screenshot at
+`assets/tunnelbar-macos.png`, preserved at its original resolution. Its controls
+are part of the image, not interactive website controls.
 
 For an HTTP preview, from the root:
 

@@ -8,7 +8,7 @@ bash scripts/build-app.sh
 site_path="$PWD/dist/site"
 mkdir -p "$site_path/assets" "$site_path/downloads"
 cp site/index.html site/styles.css site/app.js "$site_path/"
-cp site/assets/*.svg "$site_path/assets/"
+cp site/assets/*.svg site/assets/*.png "$site_path/assets/"
 
 architectures="$(lipo -archs dist/TunnelBar.app/Contents/MacOS/TunnelBar)"
 if [[ "$architectures" == *arm64* && "$architectures" == *x86_64* ]]; then
