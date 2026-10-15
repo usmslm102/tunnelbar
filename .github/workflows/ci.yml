@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Show toolchain
+        run: swift --version
+      - name: Check supporting files
+        run: |
+          bash -n scripts/build-app.sh scripts/test.sh
+          python3 -c 'import ast; from pathlib import Path; ast.parse(Path("scripts/smoke-test.py").read_text())'
+          plutil -lint Resources/Info.plist
+          git diff --check
+      - name: Test
+        run: bash scripts/test.sh
+      - name: Build app
+        run: bash scripts/build-app.sh
+      - name: Verify and archive app
+        run: |
+          codesign --verify --deep --strict --verbose=2 dist/TunnelBar.app
+          plutil -lint dist/TunnelBar.app/Contents/Info.plist
+          ditto -c -k --sequesterRsrc --keepParent dist/TunnelBar.app dist/TunnelBar-${{ runner.arch }}.zip
+      - name: Upload development build
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: TunnelBar-${{ runner.arch }}
+          path: dist/TunnelBar-${{ runner.arch }}.zip
+          if-no-files-found: error
+          retention-days: 7
