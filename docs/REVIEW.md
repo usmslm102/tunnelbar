@@ -1,6 +1,7 @@
 # Release readiness review
 
-This project remains a development preview. Source merge readiness and production
+The maintainer approved stable v1.0.0 publication after reporting successful
+manual testing on 2026-10-16. The findings below document the original preview review. Source merge readiness and production
 acceptance are different decisions; passing offline checks does not establish
 provider email delivery or readiness for production traffic.
 
@@ -19,8 +20,8 @@ provider email delivery or readiness for production traffic.
 The test-only Swift Testing release is pinned to its upstream 6.0.3 commit; its
 macro dependency is recorded in `Package.resolved`. Neither Testing nor SwiftSyntax
 is linked into the app or guardian. Initial dependency resolution needs network
-access. The static site remains unpublished. Making the source public does not mark
-the development build as production-verified or complete the release checklist.
+access. The static site and binary releases are now published through GitHub Actions.
+Offline checks alone do not establish provider-side behavior or hardware coverage.
 
 Local validation: bare `swift test` ran 19 passing tests; three disposable-process
 integration tests passed for both the debug and packaged guardian. Universal 2

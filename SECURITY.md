@@ -1,6 +1,6 @@
 # Security policy
 
-TunnelBar is pre-release software. Security fixes target the latest commit on
+Security fixes target the latest release and the latest commit on
 `main`; there are no separately maintained release branches or response-time
 guarantees.
 
@@ -40,8 +40,8 @@ synthetic data, impact, and a possible mitigation. Never include live secrets.
 - A Quick Tunnel's hostname is temporary. Do not treat secrecy of the URL as an
   access-control mechanism.
 
-Live email delivery and an authenticated browser session have not yet been
-verified for the initial implementation. No Apple Developer account is required: builds are intentionally ad-hoc signed,
+The maintainer reported successful manual testing before publishing v1.0.0.
+Cloudflare controls provider-side email delivery and authentication. No Apple Developer account is required: builds are intentionally ad-hoc signed,
 with Developer ID signing and notarization left optional. Gatekeeper may require
 additional user action for a downloaded app. Before publishing a release, complete
 the manual checks in [docs/RELEASING.md](docs/RELEASING.md).

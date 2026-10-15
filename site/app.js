@@ -10,7 +10,7 @@ for (const build of window.TUNNELBAR_DOWNLOADS || []) {
     if (!link || !metadata) continue;
     link.href = build.href;
     link.setAttribute("download", "");
-    link.textContent = build.arch === "universal" ? "Download universal build ↓" : "Download development build ↓";
+    link.textContent = build.arch === "universal" ? "Download universal build ↓" : "Download for macOS ↓";
     metadata.textContent = `v${build.version} · ${build.size} · ${build.arch === "universal" ? "Universal 2 · " : ""}ZIP`;
     if (build.sha256 && /^[a-f0-9]{64}$/.test(build.sha256)) {
       const checksum = document.createElement("a");

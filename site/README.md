@@ -52,7 +52,7 @@ Both architecture buttons then use the universal ZIP. The native app and its
 bundled guardian both contain arm64 and x86_64 slices.
 
 Unpack and validate each build on its target architecture before distributing it.
-These are ad-hoc signed development builds, not notarized public releases.
+Published builds are ad-hoc signed and not notarized. macOS may show a Gatekeeper prompt.
 
 ## Publication
 

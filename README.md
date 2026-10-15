@@ -2,7 +2,7 @@
 
 A native **Cloudflared Tunnel UI for macOS**, built with SwiftUI and AppKit. Share a local HTTP service through an email-protected link, view your account tunnels, and stop sharing from the menu bar.
 
-Development preview: the source is open under the MIT license; Universal 2 preview downloads are available from [GitHub Releases](https://github.com/usmslm102/cloudflared-macos/releases). This is an independent project, not affiliated with or endorsed by Cloudflare. Cloudflared is installed separately and remains under its own license.
+The source is open under the MIT license; Universal 2 downloads are available from [GitHub Releases](https://github.com/usmslm102/cloudflared-macos/releases). This is an independent project, not affiliated with or endorsed by Cloudflare. Cloudflared is installed separately and remains under its own license.
 
 ## Requirements
 
@@ -78,7 +78,7 @@ An optional live smoke test creates an isolated synthetic HTTP server, starts a 
 python3 scripts/smoke-test.py
 ```
 
-CI runs offline tests, builds and verifies the app bundle, and uploads a development artifact. It does not run public tunnels. Full email delivery, authenticated browser access, Intel execution, and visual acceptance checks are still pending for the initial implementation; see the [release checklist](docs/RELEASING.md). Quick Tunnels require working DNS and outbound connectivity to Cloudflare.
+CI runs offline tests, builds and verifies the app bundle, and uploads a development artifact. It does not run public tunnels. The maintainer reported successful manual testing before publishing v1.0.0. Automated checks do not establish coverage of every macOS version or Intel hardware; see the [release checklist](docs/RELEASING.md). Quick Tunnels require working DNS and outbound connectivity to Cloudflare.
 
 Cloudflare references: [Quick Tunnels and email gates](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/), [named tunnels](https://developers.cloudflare.com/tunnel/get-started/).
 

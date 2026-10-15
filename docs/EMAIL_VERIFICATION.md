@@ -1,6 +1,10 @@
 # Manual email authentication acceptance check
 
-Status: **not completed**. An HTTP login page does not establish email delivery,
+Release status: the maintainer reported successful testing and approved v1.0.0
+publication on 2026-10-16. Detailed per-step results and hardware coverage were
+not supplied in the repository. Use this procedure for repeatable verification.
+
+ An HTTP login page does not establish email delivery,
 allowed-user authentication, or denial of unlisted emails. Unit tests and CI do
 not make those claims. Cloudflare controls these provider-side behaviors.
 

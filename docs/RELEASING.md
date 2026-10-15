@@ -1,6 +1,6 @@
 # Release checklist
 
-The source repository is public, while the app remains a development preview.
+The source repository and stable releases are public.
 Tag pushes publish binaries automatically through GitHub Actions. Development
 previews may be published while the manual acceptance checks below remain open;
 keep their limitations explicit in the release notes. Complete these checks before
