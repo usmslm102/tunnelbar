@@ -40,8 +40,8 @@ jobs:
       - name: Verify and archive app
         run: |
           codesign --verify --deep --strict --verbose=2 dist/TunnelBar.app
-          lipo -verify_arch arm64 x86_64 dist/TunnelBar.app/Contents/MacOS/TunnelBar
-          lipo -verify_arch arm64 x86_64 dist/TunnelBar.app/Contents/MacOS/TunnelGuardian
+          lipo dist/TunnelBar.app/Contents/MacOS/TunnelBar -verify_arch arm64 x86_64
+          lipo dist/TunnelBar.app/Contents/MacOS/TunnelGuardian -verify_arch arm64 x86_64
           plutil -lint dist/TunnelBar.app/Contents/Info.plist
           ditto -c -k --sequesterRsrc --keepParent dist/TunnelBar.app dist/TunnelBar-universal.zip
           ditto -c -k --keepParent dist/site dist/TunnelBar-site-universal.zip
