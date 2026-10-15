@@ -4,6 +4,8 @@ A native **Cloudflared Tunnel UI for macOS**, built with SwiftUI and AppKit. Sha
 
 The source is open under the MIT license; Universal 2 downloads are available from [GitHub Releases](https://github.com/usmslm102/tunnelbar/releases). This is an independent project, not affiliated with or endorsed by Cloudflare. Cloudflared is installed separately and remains under its own license.
 
+<img src="site/assets/tunnelbar-macos.png" width="504" alt="TunnelBar’s native macOS menu bar panel showing local port sharing, email protection, and recent shares.">
+
 ## Requirements
 
 - macOS 13 or later.
