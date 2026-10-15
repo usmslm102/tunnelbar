@@ -10,6 +10,8 @@ struct PanelView: View {
     @State private var requiresEmail = true
     @State private var settings = false
     @State private var copied: UUID?
+    @State private var loginCommandCopied = false
+    @State private var accountExpanded = false
     @FocusState private var portFocused: Bool
 
     var body: some View {
@@ -33,7 +35,9 @@ struct PanelView: View {
                     else {
                         createView
                         if !store.sessions.isEmpty { sessionsView }
-                        accountView
+                        DisclosureGroup("Account tunnels (optional)", isExpanded: $accountExpanded) {
+                            accountView.padding(.top, 12)
+                        }
                         if !store.recent.isEmpty { recentView }
                     }
                 }.padding(18)
@@ -163,9 +167,18 @@ struct PanelView: View {
             }
             if let message = store.accountMessage {
                 Text(message).font(.caption).foregroundStyle(.secondary)
-                Button(store.signingIn ? "Waiting for browser sign-in…" : "Sign in to Cloudflare") { store.signIn() }
-                    .disabled(store.signingIn || store.version == "cloudflared unavailable")
-                if let url = store.signInURL { Link("Continue sign-in in browser", destination: url).font(.caption) }
+                Text("To list named tunnels, run this in Terminal and complete Cloudflare’s domain authorization. Then refresh here.")
+                    .font(.caption).foregroundStyle(.secondary)
+                HStack {
+                    Text("cloudflared tunnel login").font(.caption.monospaced()).textSelection(.enabled)
+                    Spacer()
+                    Button(loginCommandCopied ? "Copied" : "Copy command") {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString("cloudflared tunnel login", forType: .string)
+                        loginCommandCopied = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { loginCommandCopied = false }
+                    }.font(.caption)
+                }
             } else if store.tunnels.isEmpty {
                 Text(store.refreshing ? "Loading tunnels…" : "No named tunnels in this account.")
                     .font(.caption).foregroundStyle(.secondary)
@@ -189,6 +202,8 @@ struct PanelView: View {
             }
             Link("Manage named tunnels ↗", destination: URL(string: "https://one.dash.cloudflare.com/")!)
                 .font(.caption)
+            Text("Uses the native cloudflared CLI certificate. TunnelBar does not create an account session.")
+                .font(.caption2).foregroundStyle(.secondary)
         }
     }
 

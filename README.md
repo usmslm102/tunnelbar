@@ -44,7 +44,9 @@ Recent shares save the port, local protocol, access mode, and email allowlist on
 
 ## Account tunnels
 
-Quick shares need no account, domain, or API token. To see existing named tunnels, use **Sign in to Cloudflare**. This runs `cloudflared tunnel login` and uses its existing login certificate if one is available. Select the relevant account/domain in the browser. The account list refreshes every 30 seconds, showing all named tunnels returned by `cloudflared tunnel list --output json` for that login.
+Quick shares need no account, domain, or API token. The collapsed **Account tunnels (optional)** section reads the native cloudflared CLI credentials; TunnelBar does not create or manage an account session.
+
+To connect a CLI account, run `cloudflared tunnel login` in Terminal, select and authorize the relevant domain in the browser, and wait for the CLI to save its account certificate (normally `~/.cloudflared/cert.pem`). Signing in to the Cloudflare dashboard alone does not finish that authorization. Return to TunnelBar and refresh the list. The panel offers a copyable command rather than launching a browser login and waiting indefinitely. Existing CLI credentials work automatically; the list refreshes every 30 seconds.
 
 Account entries show Cloudflare connection status, including connectors running on other machines. You can copy their IDs and open the Cloudflare dashboard to manage their routing and Access policies. Named tunnels are listed, not started, stopped, or reconfigured by TunnelBar. Quick Tunnels created outside this app cannot be discovered through the named-tunnel API.
 

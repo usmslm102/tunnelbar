@@ -26,8 +26,6 @@ final class TunnelStore: ObservableObject {
     @Published var error: String?
     @Published var accountMessage: String?
     @Published var refreshing = false
-    @Published var signingIn = false
-    @Published var signInURL: URL?
     @Published var defaultEmails: String {
         didSet { sharePreferences.emails = defaultEmails }
     }
@@ -117,35 +115,9 @@ final class TunnelStore: ObservableObject {
             tunnels = []
             let message = error.localizedDescription
             accountMessage = message.contains("cert.pem") || message.contains("origin cert")
-                ? "Sign in to list your account tunnels. Quick shares work without signing in."
+                ? "No cloudflared CLI account certificate found. Quick shares work without an account."
                 : "Couldn’t refresh account tunnels. \(message)"
         }
-    }
-
-    func signIn() {
-        guard !signingIn, !shuttingDown else { return }
-        signingIn = true
-        signInURL = nil
-        let runner = CloudflaredProcess()
-        let id = UUID()
-        commands[id] = runner
-        var lastLines: [String] = []
-        do {
-            try runner.start(binary: binary, arguments: ["tunnel", "login"], timeout: 300) { [weak self] line in
-                lastLines = Array((lastLines + [line]).suffix(10))
-                // cloudflared normally opens the browser; expose its URL as a fallback.
-                if let range = line.range(of: #"https://dash\.cloudflare\.com/[^\s]+"#, options: .regularExpression) {
-                    self?.signInURL = URL(string: String(line[range]))
-                }
-            } onExit: { [weak self] code, stopped in
-                guard let self else { return }
-                self.commands.removeValue(forKey: id)
-                self.signingIn = false
-                self.signInURL = nil
-                if code == 0 { Task { await self.refresh() } }
-                else { self.error = stopped ? "Sign-in timed out. Try again when ready." : lastLines.joined(separator: "\n") }
-            }
-        } catch { commands.removeValue(forKey: id); signingIn = false; self.error = error.localizedDescription }
     }
 
     func start(_ share: Share) {

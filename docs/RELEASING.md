@@ -12,7 +12,8 @@ Before the first public release:
   both. `TUNNELBAR_ARCH=universal ./scripts/build-app.sh` produces both slices
   for the app and guardian; cross-compilation alone does not verify Intel execution.
 - Check the panel in light/dark mode, VoiceOver labels, keyboard navigation,
-  startup without cloudflared, and account sign-in/list refresh.
+  startup without cloudflared, and the optional account list using existing CLI
+  credentials or a separately completed Terminal login.
 - Verify a real browser receives an email code, an allowed email can enter, an
   unlisted email cannot enter, and Stop/Quit end access. Follow [EMAIL_VERIFICATION.md](EMAIL_VERIFICATION.md). Use a disposable local
   service and never publish a real allowlist in screenshots or logs.
