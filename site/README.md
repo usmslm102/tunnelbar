@@ -57,9 +57,9 @@ These are ad-hoc signed development builds, not notarized public releases.
 ## Publication
 
 Nothing in this project deploys the site, enables GitHub Pages, uploads a release,
-or changes repository visibility. CI includes the static files in its private
-development artifact only. The GitHub repository and release links still require
-authorized access while the repository is private.
+or changes repository visibility. CI includes the static files in its
+development artifact only; public source availability does not publish a website
+or create a stable binary release.
 
 When publishing is explicitly requested later, host the contents of `dist/site/`
 with the relative directory structure intact, review the pre-release copy, and

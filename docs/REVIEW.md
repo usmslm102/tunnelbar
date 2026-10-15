@@ -19,7 +19,8 @@ provider email delivery or readiness for production traffic.
 The test-only Swift Testing release is pinned to its upstream 6.0.3 commit; its
 macro dependency is recorded in `Package.resolved`. Neither Testing nor SwiftSyntax
 is linked into the app or guardian. Initial dependency resolution needs network
-access. The static site remains unpublished and the repository remains private.
+access. The static site remains unpublished. Making the source public does not mark
+the development build as production-verified or complete the release checklist.
 
 Local validation: bare `swift test` ran 19 passing tests; three disposable-process
 integration tests passed for both the debug and packaged guardian. Universal 2

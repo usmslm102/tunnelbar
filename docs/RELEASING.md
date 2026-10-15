@@ -1,7 +1,9 @@
 # Release checklist
 
-The repository is private during development. This checklist does not publish
-anything automatically; repository visibility and releases are maintainer actions.
+The source repository is public, while the app remains a development preview.
+This checklist covers binary release acceptance and does not publish anything
+automatically; repository visibility, website hosting, and releases are separate
+maintainer actions.
 
 Before the first public release:
 
