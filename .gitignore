@@ -1,11 +1,32 @@
+# SwiftPM, Xcode, and packaged build output
 .build/
 dist/
-.DS_Store
+build/
+DerivedData/
 .swiftpm/
 xcuserdata/
 *.xcuserstate
+*.app/
+*.dSYM/
+*.xcarchive/
+*.xcresult/
+*.o
+*.swiftmodule
+*.swiftdoc
+*.swiftsourceinfo
+*.profraw
+*.profdata
+TunnelBar*.zip
+TunnelBar*.zip.sha256
+TunnelBar*.dmg
+TunnelBar*.pkg
+
+# OS metadata and Python caches
+.DS_Store
 __pycache__/
 *.py[cod]
+
+# Local configuration and signing credentials
 .env
 .env.*
 !.env.example
@@ -16,3 +37,5 @@ __pycache__/
 *.mobileprovision
 .cloudflared/
 *.log
+
+# Package.resolved is intentionally tracked for reproducible dependency resolution.
