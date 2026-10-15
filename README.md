@@ -1,6 +1,6 @@
 # TunnelBar
 
-A small, native SwiftUI / AppKit menu bar app for cloudflared. Share a local HTTP service through an email-protected link, view your account tunnels, and stop sharing from the menu bar.
+A native **Cloudflared Tunnel UI for macOS**, built with SwiftUI and AppKit. Share a local HTTP service through an email-protected link, view your account tunnels, and stop sharing from the menu bar.
 
 Early-stage software: no notarized public release yet. This is an independent project, not affiliated with or endorsed by Cloudflare. Cloudflared is installed separately and remains under its own license.
 

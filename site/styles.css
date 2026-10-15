@@ -42,6 +42,7 @@ h1 { margin: 21px 0 5px -9px; font-size: clamp(70px, 12.7vw, 164px); line-height
 .text-link { font-size: 12px; border-bottom: 1px solid transparent; transition: border-color .2s; }
 .text-link:hover { border-color: currentColor; }
 .hero-copy .hero-note { margin-top: 13px; font: 10px var(--mono); color: var(--muted); }
+.hero-copy .affiliation-note { max-width: 340px; margin-top: 17px; font-size: 11px; line-height: 1.6; color: var(--muted); }
 .product-figure { position: relative; margin: 0; padding: 0 30px 0 22px; animation: arrive .8s .18s ease-out both; }
 .product-figure::before { content: ""; position: absolute; width: 405px; height: 405px; top: 33px; left: -2px; border: 1px solid #c6d4bb; border-radius: 50%; pointer-events: none; }
 .product-figure::after { content: ""; position: absolute; width: 430px; height: 430px; top: 20px; left: -14px; border: 1px solid #dce4d4; border-radius: 50%; pointer-events: none; }
@@ -151,7 +152,7 @@ summary::after { content: "+"; color: #6b8058; font-size: 17px; line-height: 1.1
 details[open] summary::after { content: "−"; }
 details[open] > p { animation: arrive .2s ease-out; }
 .footer { display: flex; align-items: center; justify-content: space-between; gap: 25px; border-top: 1px solid var(--line); padding-block: 27px 36px; }
-.footer p { font-size: 10px; color: var(--muted); line-height: 1.8; }
+.footer p { max-width: 210px; font-size: 10px; color: var(--muted); line-height: 1.8; }
 .footer p a { text-decoration: underline; text-underline-offset: 3px; }
 .footer > div { display: flex; gap: 23px; font-size: 10px; }
 .footer > div a:hover { text-decoration: underline; text-underline-offset: 4px; }
