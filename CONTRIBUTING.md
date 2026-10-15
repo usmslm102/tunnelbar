@@ -27,8 +27,9 @@ temporary directory. Set `TUNNELBAR_BUILD_PATH` to choose a build directory.
 - Describe the problem and resulting behavior, and link an issue when relevant.
 - Run the tests and app build. Add tests for meaningful behavior changes.
 - Include screenshots for UI changes, using synthetic ports, URLs, and emails.
-- Preserve mandatory email gating, direct process argument passing, and ownership
-  of child processes. Never silently fall back to a public tunnel.
+- Preserve email gating by default, sticky email preferences, explicit anonymous
+  opt-in, direct process argument passing, and ownership of child processes. Never
+  silently fall back to a public tunnel.
 - Do not commit credentials, cloudflared certificates, logs, private hostnames,
   real email allowlists, generated apps, or signing material.
 - Avoid dependencies and custom UI where native APIs suffice.

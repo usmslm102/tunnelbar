@@ -5,16 +5,17 @@ public struct Share: Codable, Identifiable, Equatable {
     public var port: Int
     public var emails: [String]
     public var useHTTPS: Bool
+    public let requiresEmail: Bool
 
-    public init(port: String, emails: String, useHTTPS: Bool = false) throws {
+    public init(port: String, emails: String, useHTTPS: Bool = false, requiresEmail: Bool = true) throws {
         guard let number = Int(port), (1...65535).contains(number) else {
             throw TunnelError.message("Enter a port between 1 and 65535.")
         }
-        let addresses = emails.components(separatedBy: CharacterSet(charactersIn: ",;\n "))
+        let addresses = (requiresEmail ? emails : "").components(separatedBy: CharacterSet(charactersIn: ",;\n "))
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
             .filter { !$0.isEmpty }
-        guard !addresses.isEmpty else {
-            throw TunnelError.message("Add at least one allowed email. Every share requires email authentication.")
+        guard !requiresEmail || !addresses.isEmpty else {
+            throw TunnelError.message("Add at least one allowed email, or explicitly turn off the email gate to share anonymously.")
         }
         for address in addresses {
             // Deliberately accept exact email addresses only; no wildcard access.
@@ -27,13 +28,38 @@ public struct Share: Codable, Identifiable, Equatable {
         self.port = number
         self.emails = Array(Set(addresses)).sorted()
         self.useHTTPS = useHTTPS
+        self.requiresEmail = requiresEmail
+    }
+
+    private enum CodingKeys: String, CodingKey { case id, port, emails, useHTTPS, requiresEmail }
+
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        try self.init(port: String(values.decode(Int.self, forKey: .port)),
+                      emails: values.decode([String].self, forKey: .emails).joined(separator: ", "),
+                      useHTTPS: values.decode(Bool.self, forKey: .useHTTPS),
+                      requiresEmail: values.decodeIfPresent(Bool.self, forKey: .requiresEmail) ?? true)
+        id = try values.decode(UUID.self, forKey: .id)
     }
 
     public var origin: String { "\(useHTTPS ? "https" : "http")://localhost:\(port)" }
 
     public func arguments(config: String) -> [String] {
         ["tunnel", "--config", config, "--no-autoupdate", "--metrics", "127.0.0.1:0",
-         "--grace-period", "2s", "--url", origin] + emails.flatMap { ["--allowed-mail", $0] }
+         "--grace-period", "2s", "--url", origin] + (requiresEmail ? emails.flatMap { ["--allowed-mail", $0] } : [])
+    }
+}
+
+/// Email defaults persist independently of the access mode of a particular share.
+public struct SharePreferences {
+    private let defaults: UserDefaults
+    public init(defaults: UserDefaults = .standard) { self.defaults = defaults }
+    public var emails: String {
+        get { defaults.string(forKey: "emails") ?? "" }
+        nonmutating set { defaults.set(newValue, forKey: "emails") }
+    }
+    public func remember(_ share: Share) {
+        if share.requiresEmail { emails = share.emails.joined(separator: ", ") }
     }
 }
 

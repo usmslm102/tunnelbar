@@ -28,11 +28,11 @@ You can drag `dist/TunnelBar.app` to Applications. It runs in the menu bar witho
 3. Enter the port and the full email addresses allowed to visit.
 4. Click **Create protected link**. Once connected, copy or open the link.
 
-Visitors authenticate using a one-time code sent to an allowed email. There is no public-share mode. HTTPS in the form describes the connection to your **local** server; public links always use HTTPS. Local HTTPS certificates must be trusted by cloudflared.
+The **Require email** switch is on by default. Allowed emails are remembered as you edit them and prefilled on the next launch. With the switch on, visitors authenticate using a one-time code sent to an allowed email. Turn it off to create an **anonymous link**, which anyone with the URL can access without signing in. The form restores email protection after you create a link; anonymous shares do not erase your saved emails. HTTPS in the form describes the connection to your **local** server; public links always use HTTPS. Local HTTPS certificates must be trusted by cloudflared.
 
 Links use temporary `trycloudflare.com` hostnames. Stop ends that connector; restarting creates a new URL. Keep the app open while sharing. Normal quit stops every connector started by TunnelBar. Other cloudflared processes and system services are left alone. Force-quitting the app or a crash may leave a child process running; use Activity Monitor to stop that process.
 
-Recent shares save the port, local protocol, and email allowlist on this Mac. **Reuse** fills the form so you can review the addresses before starting again. Remove an entry with its × button, or clear all entries in Settings.
+Recent shares save the port, local protocol, access mode, and email allowlist on this Mac. **Reuse** fills the form with email protection enabled, including when reusing an anonymous share. Review the addresses before starting again. Remove an entry with its × button, or clear all entries in Settings.
 
 ## Account tunnels
 
@@ -44,8 +44,8 @@ Account entries show Cloudflare connection status, including connectors running 
 
 - Native `NSStatusItem` and `NSPopover` hosting SwiftUI, with system controls, fonts, colors, and light/dark appearance.
 - Detects Homebrew's Apple Silicon and Intel cloudflared locations; Settings supports another executable.
-- Checks the installed binary's help for email-gate support before enabling creation.
-- Every Quick Tunnel passes an explicit `--allowed-mail` for every allowed address.
+- Checks the installed binary's help for email-gate support before enabling protected sharing. Anonymous sharing is an explicit option, never an automatic fallback.
+- Email-protected Quick Tunnels pass an explicit `--allowed-mail` for every allowed address. Explicitly anonymous shares omit that flag.
 - Arguments go straight to `Process`, never through a shell.
 - An isolated empty configuration prevents existing named-tunnel ingress from affecting Quick Tunnels. Inherited `TUNNEL_*` and `CLOUDFLARED_*` environment variables are removed; GUI launches use cloudflared's standard certificate locations.
 - Cloudflared output is drained in the background, with separate stdout/stderr for structured commands. Logs are bounded in memory. Link creation and actual connector readiness are tracked separately.
@@ -58,7 +58,7 @@ Account entries show Cloudflare connection status, including connectors running 
 bash scripts/test.sh
 ```
 
-Tests cover email-gate enforcement, input validation, safe argument passing, split output parsing, account status, persistence, stdout/stderr draining, and child-process timeout. Live email delivery requires a real allowed inbox; unit tests do not send mail or expose a local service.
+Tests cover default email protection, explicit anonymous arguments, sticky email preferences, legacy saved-share migration, input validation, safe argument passing, split output parsing, account status, persistence, stdout/stderr draining, and child-process timeout. Live email delivery requires a real allowed inbox; unit tests do not send mail or expose a local service.
 
 An optional live smoke test creates an isolated synthetic HTTP server, starts a protected tunnel with a reserved example email, checks that anonymous access gets an email sign-in page, and stops both processes:
 

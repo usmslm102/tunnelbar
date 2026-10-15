@@ -28,12 +28,15 @@ final class TunnelStore: ObservableObject {
     @Published var refreshing = false
     @Published var signingIn = false
     @Published var signInURL: URL?
-    @Published var defaultEmails: String
+    @Published var defaultEmails: String {
+        didSet { sharePreferences.emails = defaultEmails }
+    }
     @Published var selectedLog: UUID?
     @Published var inspected = false
     private var processes: [UUID: CloudflaredProcess] = [:]
     private var commands: [UUID: CloudflaredProcess] = [:]
     private let defaults = UserDefaults.standard
+    private let sharePreferences = SharePreferences()
     private var refreshTimer: Timer?
     private let configURL: URL
 
@@ -43,7 +46,7 @@ final class TunnelStore: ObservableObject {
         let saved = UserDefaults.standard.string(forKey: "binary")
         binary = saved ?? ["/opt/homebrew/bin/cloudflared", "/usr/local/bin/cloudflared", "/usr/bin/cloudflared"]
             .first { FileManager.default.isExecutableFile(atPath: $0) } ?? "/opt/homebrew/bin/cloudflared"
-        defaultEmails = UserDefaults.standard.string(forKey: "emails") ?? ""
+        defaultEmails = SharePreferences().emails
         if let data = UserDefaults.standard.data(forKey: "recentShares"),
            let shares = try? JSONDecoder().decode([Share].self, from: data) { recent = shares }
         configURL = FileManager.default.temporaryDirectory
@@ -144,7 +147,12 @@ final class TunnelStore: ObservableObject {
     }
 
     func start(_ share: Share) {
-        guard supportsEmailGate else { error = "This cloudflared version does not support email gates."; return }
+        guard inspected, version != "cloudflared unavailable" else {
+            error = "Choose an available cloudflared executable before sharing."; return
+        }
+        guard !share.requiresEmail || supportsEmailGate else {
+            error = "This cloudflared version does not support email gates. Update it or explicitly choose anonymous sharing."; return
+        }
         guard !sessions.contains(where: { $0.share.port == share.port && ![.failed, .stopped].contains($0.state) }) else {
             error = "Port \(share.port) already has an active share. Stop it before changing access."; return
         }
@@ -164,9 +172,9 @@ final class TunnelStore: ObservableObject {
                     self.error = "Share on port \(share.port) stopped unexpectedly. Open its logs for details."
                 }
             }
-            defaultEmails = share.emails.joined(separator: ", ")
-            defaults.set(defaultEmails, forKey: "emails")
-            recent.removeAll { $0.port == share.port && $0.emails == share.emails && $0.useHTTPS == share.useHTTPS }
+            sharePreferences.remember(share)
+            if share.requiresEmail { defaultEmails = sharePreferences.emails }
+            recent.removeAll { $0.port == share.port && $0.emails == share.emails && $0.useHTTPS == share.useHTTPS && $0.requiresEmail == share.requiresEmail }
             recent.insert(share, at: 0)
             recent = Array(recent.prefix(8))
             defaults.set(try? JSONEncoder().encode(recent), forKey: "recentShares")

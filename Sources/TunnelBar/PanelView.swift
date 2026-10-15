@@ -7,6 +7,7 @@ struct PanelView: View {
     @State private var port = "3000"
     @State private var emails = ""
     @State private var useHTTPS = false
+    @State private var requiresEmail = true
     @State private var settings = false
     @State private var copied: UUID?
     @FocusState private var portFocused: Bool
@@ -58,7 +59,8 @@ struct PanelView: View {
             }.padding(.horizontal, 18).padding(.vertical, 12)
         }
         .frame(width: 420, height: 620)
-        .onAppear { emails = store.defaultEmails }
+        .onAppear { emails = store.defaultEmails; requiresEmail = true }
+        .onChange(of: emails) { store.defaultEmails = $0 }
     }
 
     private var createView: some View {
@@ -72,16 +74,26 @@ struct PanelView: View {
                 Toggle("HTTPS", isOn: $useHTTPS).toggleStyle(.checkbox).help("Use HTTPS for the local server")
             }
             VStack(alignment: .leading, spacing: 6) {
-                Label("Email gate", systemImage: "lock.shield").font(.subheadline.weight(.medium))
-                TextField("alice@example.com, bob@example.com", text: $emails, axis: .vertical)
-                    .lineLimit(2...3).textFieldStyle(.roundedBorder).accessibilityLabel("Allowed email addresses")
-                Text("Only these people can enter, using a code sent to their email.")
-                    .font(.caption).foregroundStyle(.secondary)
+                Toggle(isOn: $requiresEmail) {
+                    Label("Require email", systemImage: "lock.shield").font(.subheadline.weight(.medium))
+                }.toggleStyle(.switch)
+                if requiresEmail {
+                    TextField("alice@example.com, bob@example.com", text: $emails, axis: .vertical)
+                        .lineLimit(2...3).textFieldStyle(.roundedBorder).accessibilityLabel("Allowed email addresses")
+                    Text("Only these people can enter, using a code sent to their email.")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Text("Emails are remembered. Email protection is on by default.")
+                        .font(.caption2).foregroundStyle(.secondary)
+                } else {
+                    Label("Anonymous: anyone with the link can access this port. No sign-in required.", systemImage: "lock.open")
+                        .font(.caption).foregroundStyle(.orange)
+                }
             }
             Button(action: create) {
-                Label("Create protected link", systemImage: "plus").frame(maxWidth: .infinity)
+                Label(requiresEmail ? "Create protected link" : "Create anonymous link", systemImage: requiresEmail ? "lock.fill" : "lock.open")
+                    .frame(maxWidth: .infinity)
             }.controlSize(.large).buttonStyle(.borderedProminent)
-                .disabled(!store.supportsEmailGate)
+                .disabled(!store.inspected || store.version == "cloudflared unavailable" || (requiresEmail && !store.supportsEmailGate))
             Text("Temporary URL · ends when stopped · no account needed")
                 .font(.caption2).foregroundStyle(.secondary)
         }
@@ -90,8 +102,9 @@ struct PanelView: View {
     private func create() {
         do {
             store.error = nil
-            let share = try Share(port: port, emails: emails, useHTTPS: useHTTPS)
+            let share = try Share(port: port, emails: emails, useHTTPS: useHTTPS, requiresEmail: requiresEmail)
             store.start(share)
+            requiresEmail = true
         } catch { store.error = error.localizedDescription }
     }
 
@@ -122,12 +135,13 @@ struct PanelView: View {
                                 copied = session.id
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) { copied = nil }
                             } label: { Image(systemName: copied == session.id ? "checkmark" : "doc.on.doc") }
-                                .help("Copy protected link").accessibilityLabel("Copy protected link")
+                                .help("Copy link").accessibilityLabel("Copy link")
                         }
                     }
                     HStack {
-                        Label(session.share.emails.joined(separator: ", "), systemImage: "lock.fill")
-                            .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                        Label(session.share.requiresEmail ? session.share.emails.joined(separator: ", ") : "Anonymous · anyone with the link",
+                              systemImage: session.share.requiresEmail ? "lock.fill" : "lock.open")
+                            .font(.caption2).foregroundStyle(session.share.requiresEmail ? Color.secondary : Color.orange).lineLimit(1)
                         Spacer()
                         Button("Logs") { store.selectedLog = session.id }.font(.caption).buttonStyle(.link)
                     }
@@ -185,11 +199,15 @@ struct PanelView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(share.origin).font(.caption.monospaced())
-                        Text(share.emails.joined(separator: ", ")).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                        Text(share.requiresEmail ? share.emails.joined(separator: ", ") : "Anonymous · anyone with the link")
+                            .font(.caption2).foregroundStyle(.secondary).lineLimit(1)
                     }
                     Spacer()
                     Button("Reuse") {
-                        port = String(share.port); emails = share.emails.joined(separator: ", "); useHTTPS = share.useHTTPS
+                        port = String(share.port)
+                        emails = share.requiresEmail ? share.emails.joined(separator: ", ") : store.defaultEmails
+                        useHTTPS = share.useHTTPS
+                        requiresEmail = true
                         portFocused = true
                     }.help("Fill the form with these settings")
                     Button { store.forget(share.id) } label: { Image(systemName: "xmark") }
@@ -214,7 +232,7 @@ struct PanelView: View {
             }
             Divider()
             Text("Email-protected Quick Tunnels").font(.subheadline.weight(.medium))
-            Text("Each share gets a temporary trycloudflare.com address. Visitors must enter a code sent to an allowed email. Restarting a share creates a new address.")
+            Text("Email protection is on by default, and allowed emails are remembered. Turn off Require email for a share to allow anyone with the link. Each share gets a temporary trycloudflare.com address.")
                 .font(.caption).foregroundStyle(.secondary)
             Text("Keep TunnelBar open while sharing. Quitting stops the shares started by this app. Account tunnel status refreshes every 30 seconds.")
                 .font(.caption).foregroundStyle(.secondary)

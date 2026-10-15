@@ -73,7 +73,7 @@
       <div class="section-intro reveal"><span class="eyebrow">A shorter route to sharing</span><h2 id="workflow-title">Your next demo.<br>Three small steps.</h2><p>Keep your app running locally.<br>TunnelBar takes care of the link.</p></div>
       <ol class="steps">
         <li class="reveal"><span class="step-number mono">01</span><div><h3>Pick your port.</h3><p>Your site on :3000. Your prototype on :8080. Enter the port your local HTTP service is using.</p></div><span class="step-glyph mono" aria-hidden="true">:</span></li>
-        <li class="reveal"><span class="step-number mono">02</span><div><h3>Choose your people.</h3><p>Add their email addresses. Visitors need a one-time code sent to an allowed email before they can enter.</p></div><img class="step-icon" src="assets/lock.svg" alt="" width="27" height="27"></li>
+        <li class="reveal"><span class="step-number mono">02</span><div><h3>Choose your people.</h3><p>Your allowed emails are remembered. Keep the default email gate, or turn it off to let anyone with the link enter without signing in.</p></div><img class="step-icon" src="assets/lock.svg" alt="" width="27" height="27"></li>
         <li class="reveal"><span class="step-number mono">03</span><div><h3>Send the link. That’s it.</h3><p>Copy your temporary URL. Keep TunnelBar open while sharing, then hit Stop when you’re done.</p></div><span class="step-glyph" aria-hidden="true">↗</span></li>
       </ol>
     </section>
@@ -83,8 +83,8 @@
         <div class="details-heading reveal"><span class="eyebrow">Small by design</span><h2 id="details-title">A good neighbor<br>in your menu bar.</h2><span class="connection-line mono" aria-hidden="true">localhost <span>────</span> ◈ <span>────</span> your people</span></div>
         <div class="details-list">
           <div class="reveal"><h3>Feels right at home.</h3><p>Built with SwiftUI and AppKit. Native controls, no Dock icon, and your tunnels a click away.</p></div>
-          <div class="reveal"><h3>Private by invitation.</h3><p>Every new share uses an email gate. Quick shares need no Cloudflare account or API token.</p></div>
-          <div class="reveal"><h3>A little less repetition.</h3><p>Reuse recent port and email settings. View account tunnels, connection status, and logs without juggling terminals.</p></div>
+          <div class="reveal"><h3>Private by invitation.</h3><p>Email protection is on by default. Choose anonymous access when you want anyone with the link to enter. Quick shares need no account or API token.</p></div>
+          <div class="reveal"><h3>A little less repetition.</h3><p>Your email list stays saved, even after an anonymous share. Reuse recent port settings. View account tunnels, connection status, and logs without juggling terminals.</p></div>
         </div>
       </div>
     </section>
@@ -109,6 +109,7 @@
         <details><summary>How do I install a downloaded build?</summary><p>Unzip the archive, move TunnelBar.app to Applications, and open it. Look for the network icon in your menu bar. Install cloudflared separately if you don’t have it yet. These development builds are not notarized; if macOS prevents opening one, you can build from the source instructions instead.</p></details>
         <details><summary>What happens to my link when I stop?</summary><p>Quick Tunnel URLs are temporary. Stop ends the connector, and restarting creates a new URL. Normal Quit stops shares created by TunnelBar. Force-quitting or a crash can leave a child process running; check Activity Monitor after an abnormal exit.</p></details>
         <details><summary>Can I manage my existing named tunnels?</summary><p>You can sign in through cloudflared to list account tunnels and see their connection status. Routing, Access policies, and starting or stopping named tunnels are managed separately in Cloudflare.</p></details>
+        <details><summary>Can I share without email authentication?</summary><p>Yes. Require email is on by default, and your allowed emails are remembered. Turn the switch off and choose Create anonymous link to allow anyone with the URL to enter without signing in. Anonymous sharing does not erase your saved emails. The form restores email protection after creating a link or reusing a recent share.</p></details>
         <details><summary>What stays on my Mac?</summary><p>Recent ports and email allowlists are saved locally in macOS UserDefaults. You can clear recent shares in Settings. TunnelBar stores no API tokens and has no app telemetry. Cloudflare handles tunnel traffic and email authentication.</p></details>
         <details><summary>Is this ready for production traffic?</summary><p>This is early-stage software, and Cloudflare Quick Tunnels are intended for testing and development. Full browser authentication and email-delivery checks remain pending. Use named tunnels and appropriate Access policies for stable production routing.</p></details>
       </div>

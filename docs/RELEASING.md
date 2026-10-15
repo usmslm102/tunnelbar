@@ -15,6 +15,9 @@ Before the first public release:
 - Verify a real browser receives an email code, an allowed email can enter, an
   unlisted email cannot enter, and Stop/Quit end access. Use a disposable local
   service and never publish a real allowlist in screenshots or logs.
+- Verify email defaults survive relaunch and anonymous sharing; email protection
+  returns after creation and recent-share reuse. Check that an explicitly
+  anonymous link opens without sign-in and is clearly labelled in active shares.
 - Test missing network access, DNS failures, local server failure, reconnects,
   and an unsupported cloudflared version. Confirm no ungated fallback occurs.
 - Enable GitHub private vulnerability reporting when the repository supports it

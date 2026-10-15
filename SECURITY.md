@@ -17,8 +17,12 @@ synthetic data, impact, and a possible mitigation. Never include live secrets.
 
 ## Security boundaries
 
-- Every share created by the app must use cloudflared's `--allowed-mail` gate.
-  Unsupported versions are blocked; there is no public fallback.
+- Email protection is on by default and uses cloudflared's `--allowed-mail` gate.
+  Unsupported versions cannot start a protected share; there is no automatic
+  public fallback. Turning off **Require email** explicitly creates an anonymous
+  link accessible to anyone with the URL. The form restores email protection
+  after creation and when reusing recent shares. Saved emails survive anonymous
+  sharing. Older saved shares without an access-mode field stay protected.
 - Cloudflare and cloudflared implement email authentication and TLS. This app
   does not independently implement or verify the provider's authentication.
 - Allowed emails and recent share settings are saved in macOS UserDefaults,

@@ -12,10 +12,57 @@ import Testing
         #expect(Array(args[1...2]) == ["--config", "/tmp/isolated.yml"])
     }
 
-    @Test func neverCreatesUngatedShare() {
+    @Test func emailGateIsDefaultAndRejectsEmptyOrInvalidAllowlist() {
         for email in ["", "  , ; \n", "*@example.com", "alice", "a@b", "x@example.com --hello-world"] {
             #expect(throws: (any Error).self) { try Share(port: "3000", emails: email) }
         }
+    }
+
+    @Test func anonymousSharingRequiresExplicitChoiceAndOmitsEmailFlags() throws {
+        let share = try Share(port: "3000", emails: "alice@example.com", requiresEmail: false)
+        #expect(!share.requiresEmail)
+        #expect(share.emails.isEmpty)
+        #expect(!share.arguments(config: "/tmp/config.yml").contains("--allowed-mail"))
+        #expect(share.arguments(config: "/tmp/config.yml").contains("http://localhost:3000"))
+        #expect(try Share(port: "3000", emails: "alice@example.com").requiresEmail)
+        _ = try Share(port: "3000", emails: "", requiresEmail: false)
+    }
+
+    @Test func anonymousSharingStillValidatesPort() {
+        #expect(throws: (any Error).self) { try Share(port: "0", emails: "", requiresEmail: false) }
+    }
+
+    @Test func emailDefaultsSurviveAnonymousShareAndPreferencesReload() throws {
+        let suite = "TunnelBarTests-\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let preferences = SharePreferences(defaults: defaults)
+        preferences.emails = "alice@example.com"
+        preferences.remember(try Share(port: "3000", emails: "", requiresEmail: false))
+        #expect(SharePreferences(defaults: defaults).emails == "alice@example.com")
+        preferences.remember(try Share(port: "3000", emails: "bob@example.com"))
+        #expect(SharePreferences(defaults: defaults).emails == "bob@example.com")
+    }
+
+    @Test func legacyRecentShareDefaultsToEmailProtection() throws {
+        let id = UUID()
+        let data = Data("{\"id\":\"\(id)\",\"port\":3000,\"emails\":[\"alice@example.com\"],\"useHTTPS\":false}".utf8)
+        let share = try JSONDecoder().decode(Share.self, from: data)
+        #expect(share.id == id)
+        #expect(share.requiresEmail)
+        #expect(share.arguments(config: "/tmp/config.yml").contains("--allowed-mail"))
+    }
+
+    @Test func anonymousShareRoundTripPreservesExplicitMode() throws {
+        let share = try Share(port: "8080", emails: "", requiresEmail: false)
+        let decoded = try JSONDecoder().decode(Share.self, from: JSONEncoder().encode(share))
+        #expect(decoded == share)
+        #expect(!decoded.requiresEmail)
+    }
+
+    @Test func corruptProtectedHistoryCannotSilentlyBecomeAnonymous() {
+        let data = Data("{\"id\":\"\(UUID())\",\"port\":3000,\"emails\":[],\"useHTTPS\":false}".utf8)
+        #expect(throws: (any Error).self) { try JSONDecoder().decode(Share.self, from: data) }
     }
 
     @Test func portBoundariesAndHTTPS() throws {
