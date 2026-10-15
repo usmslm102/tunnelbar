@@ -31,21 +31,26 @@ jobs:
           plutil -lint Resources/Info.plist
           git diff --check
       - name: Test
-        run: bash scripts/test.sh
+        run: |
+          swift test
+          bin_path="$(swift build --show-bin-path)"
+          python3 Tests/ProcessLifecycleTests/test_guardian.py "$bin_path/TunnelGuardian"
       - name: Build app and static site
-        run: bash scripts/build-site.sh
+        run: TUNNELBAR_ARCH=universal ./scripts/build-site.sh
       - name: Verify and archive app
         run: |
           codesign --verify --deep --strict --verbose=2 dist/TunnelBar.app
+          lipo -verify_arch arm64 x86_64 dist/TunnelBar.app/Contents/MacOS/TunnelBar
+          lipo -verify_arch arm64 x86_64 dist/TunnelBar.app/Contents/MacOS/TunnelGuardian
           plutil -lint dist/TunnelBar.app/Contents/Info.plist
-          ditto -c -k --sequesterRsrc --keepParent dist/TunnelBar.app dist/TunnelBar-${{ runner.arch }}.zip
-          ditto -c -k --keepParent dist/site dist/TunnelBar-site-${{ runner.arch }}.zip
+          ditto -c -k --sequesterRsrc --keepParent dist/TunnelBar.app dist/TunnelBar-universal.zip
+          ditto -c -k --keepParent dist/site dist/TunnelBar-site-universal.zip
       - name: Upload development build
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: TunnelBar-${{ runner.arch }}
+          name: TunnelBar-universal
           path: |
-            dist/TunnelBar-${{ runner.arch }}.zip
-            dist/TunnelBar-site-${{ runner.arch }}.zip
+            dist/TunnelBar-universal.zip
+            dist/TunnelBar-site-universal.zip
           if-no-files-found: error
           retention-days: 7

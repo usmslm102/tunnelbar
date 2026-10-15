@@ -57,6 +57,8 @@ def check(folder):
                 raise ValueError(f"Invalid ZIP: {archive.name}")
             if "TunnelBar.app/Contents/MacOS/TunnelBar" not in bundle.namelist():
                 raise ValueError(f"App executable missing from {archive.name}")
+            if "TunnelBar.app/Contents/MacOS/TunnelGuardian" not in bundle.namelist():
+                raise ValueError(f"Process guardian missing from {archive.name}")
     print(f"Static site checked: local assets, fragment links, {len(builds)} download(s), ZIP integrity, and SHA-256 checksums.")
 
 

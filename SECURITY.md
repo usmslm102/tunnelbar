@@ -29,13 +29,19 @@ synthetic data, impact, and a possible mitigation. Never include live secrets.
   which is not encrypted credential storage. Clear recent shares when needed.
 - The app uses an installed executable outside the App Sandbox. Choose a trusted
   cloudflared binary; selecting another executable runs that program as your user.
-- Only processes launched by the app are stopped. Force-quit or crashes may leave
-  a connector running; inspect Activity Monitor if termination was abnormal.
+- A bundled guardian stops its owned connector process group when the app lifetime
+  pipe closes, including app SIGKILL/crash. It sends SIGTERM and escalates to
+  SIGKILL after three seconds. It cannot protect against someone also killing
+  the guardian itself. It never targets external cloudflared instances.
+- The guardian must be bundled with the app; connector launch fails closed if it
+  is missing. Graceful shutdown waits for exit before removing shared config.
 - A local service can remain reachable through its own listening interface or
   other tunnels. An email gate on this share does not secure those other routes.
 - A Quick Tunnel's hostname is temporary. Do not treat secrecy of the URL as an
   access-control mechanism.
 
 Live email delivery and an authenticated browser session have not yet been
-verified for the initial implementation. Before publishing a release, complete
+verified for the initial implementation. No Apple Developer account is required: builds are intentionally ad-hoc signed,
+with Developer ID signing and notarization left optional. Gatekeeper may require
+additional user action for a downloaded app. Before publishing a release, complete
 the manual checks in [docs/RELEASING.md](docs/RELEASING.md).

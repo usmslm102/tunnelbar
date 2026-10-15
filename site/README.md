@@ -35,11 +35,20 @@ over `file://`; the copy button selects the command if clipboard access is denie
 
 ## Other architectures
 
-The build script packages the host architecture only. An Intel Mac produces the
-Intel ZIP; an Apple silicon Mac produces arm64. To assemble both, put the other
-architecture's generated `TunnelBar-macOS-<arch>.zip` in `dist/site/downloads/`,
-then rerun the build. The script reads the version from each archive's own plist
-and generates checksum files and metadata for every included archive.
+By default the build script packages the host architecture. An Intel Mac produces
+the Intel ZIP; an Apple silicon Mac produces arm64. Set `TUNNELBAR_ARCH=arm64` or
+`TUNNELBAR_ARCH=x86_64` to cross-compile a specific slice. Each site build replaces
+previously generated ZIPs so stale app versions are not carried into a new bundle.
+Versions are read from the archived plist; checksums come from the archive bytes.
+
+For a single Universal 2 download, use:
+
+```sh
+TUNNELBAR_ARCH=universal ./scripts/build-site.sh
+```
+
+Both architecture buttons then use the universal ZIP. The native app and its
+bundled guardian both contain arm64 and x86_64 slices.
 
 Unpack and validate each build on its target architecture before distributing it.
 These are ad-hoc signed development builds, not notarized public releases.

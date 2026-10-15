@@ -10,14 +10,16 @@ mkdir -p "$site_path/assets" "$site_path/downloads"
 cp site/index.html site/styles.css site/app.js "$site_path/"
 cp site/assets/*.svg "$site_path/assets/"
 
-arch="$(uname -m)"
-case "$arch" in
-    arm64|x86_64) ;;
-    *) echo "Unsupported build architecture: $arch" >&2; exit 1 ;;
-esac
+architectures="$(lipo -archs dist/TunnelBar.app/Contents/MacOS/TunnelBar)"
+if [[ "$architectures" == *arm64* && "$architectures" == *x86_64* ]]; then
+    arch=universal
+else
+    arch="$architectures"
+fi
 
 archive="TunnelBar-macOS-${arch}.zip"
-# Replace only this script's previous archive; retain another architecture's build.
+# Downloads are generated artifacts. Never carry older binaries into a new site.
+rm -f "$site_path"/downloads/TunnelBar-macOS-*.zip "$site_path"/downloads/TunnelBar-macOS-*.zip.sha256
 ditto -c -k --sequesterRsrc --keepParent dist/TunnelBar.app "$site_path/downloads/$archive"
 cp LICENSE "$site_path/downloads/LICENSE.txt"
 
@@ -31,7 +33,7 @@ from pathlib import Path
 
 site = Path(sys.argv[1])
 builds = []
-for arch in ("arm64", "x86_64"):
+for arch in ("arm64", "x86_64", "universal"):
     archive = site / "downloads" / f"TunnelBar-macOS-{arch}.zip"
     if not archive.exists():
         continue

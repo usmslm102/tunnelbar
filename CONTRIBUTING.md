@@ -6,11 +6,13 @@ and consistent with system controls and the email-protected sharing workflow.
 ## Development
 
 Use macOS 13 or later and Swift 6.0 or later, supplied by Xcode or Apple's Command
-Line Tools. The app uses Swift 5 language mode. Tests use Swift Testing. There
-are no third-party Swift dependencies; cloudflared is needed only for live use.
+Line Tools. The app uses Swift 5 language mode. Tests use the pinned official Swift Testing source package and its SwiftSyntax
+macro dependency. SwiftPM resolves them on first build; they are not linked into
+the shipped app. Cloudflared is needed only for live use.
 
 ```sh
-bash scripts/test.sh
+swift test
+./scripts/test.sh # includes disposable-process lifecycle integration checks
 bash scripts/build-app.sh
 open dist/TunnelBar.app --args --show
 ```
@@ -20,7 +22,9 @@ temporary directory. Set `TUNNELBAR_BUILD_PATH` to choose a build directory.
 
 `Sources/TunnelCore` contains validation, CLI output parsing, and process control.
 `Sources/TunnelBar` contains the SwiftUI panel, AppKit lifecycle, and app state.
-`Tests/TunnelCoreTests` contains offline tests.
+`Sources/TunnelGuardian` contains the C process supervisor.
+`Tests/TunnelCoreTests` contains offline Swift tests, and
+`Tests/ProcessLifecycleTests` exercises crash cleanup with disposable processes.
 
 ## Pull requests
 

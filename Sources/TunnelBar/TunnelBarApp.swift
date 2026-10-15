@@ -57,16 +57,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func openPanel() { showPopover() }
     private func showPopover() {
         guard let button = statusItem.button else { return }
-        NSApp.activate(ignoringOtherApps: true)
+        if #available(macOS 14.0, *) { NSApp.activate() }
+        else { NSApp.activate(ignoringOtherApps: true) }
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         popover.contentViewController?.view.window?.makeKey()
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        store.shutdown()
-        guard store.activeCount > 0 || store.signingIn else { return .terminateNow }
-        // Give only our own connectors time to close; never kill an external cloudflared.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) { sender.reply(toApplicationShouldTerminate: true) }
+        Task {
+            await store.shutdown()
+            sender.reply(toApplicationShouldTerminate: true)
+        }
         return .terminateLater
     }
 }

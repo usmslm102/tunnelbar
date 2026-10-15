@@ -39,6 +39,7 @@ final class TunnelStore: ObservableObject {
     private let sharePreferences = SharePreferences()
     private var refreshTimer: Timer?
     private let configURL: URL
+    private var shuttingDown = false
 
     var activeCount: Int { sessions.filter { [.starting, .connected, .reconnecting, .stopping].contains($0.state) }.count }
 
@@ -66,6 +67,7 @@ final class TunnelStore: ObservableObject {
     }
 
     private func command(_ arguments: [String], timeout: TimeInterval = 25) async throws -> String {
+        guard !shuttingDown else { throw TunnelError.message("TunnelBar is closing.") }
         let id = UUID()
         let runner = CloudflaredProcess()
         commands[id] = runner
@@ -121,7 +123,7 @@ final class TunnelStore: ObservableObject {
     }
 
     func signIn() {
-        guard !signingIn else { return }
+        guard !signingIn, !shuttingDown else { return }
         signingIn = true
         signInURL = nil
         let runner = CloudflaredProcess()
@@ -147,6 +149,7 @@ final class TunnelStore: ObservableObject {
     }
 
     func start(_ share: Share) {
+        guard !shuttingDown else { return }
         guard inspected, version != "cloudflared unavailable" else {
             error = "Choose an available cloudflared executable before sharing."; return
         }
@@ -213,10 +216,13 @@ final class TunnelStore: ObservableObject {
         defaults.set(path, forKey: "binary")
         Task { await inspect(); await refresh() }
     }
-    func shutdown() {
+    func shutdown() async {
+        shuttingDown = true
         refreshTimer?.invalidate()
-        for runner in processes.values { runner.stop() }
-        for runner in commands.values { runner.stop() }
+        let runners = Array(processes.values) + Array(commands.values)
+        await withTaskGroup(of: Void.self) { group in
+            for runner in runners { group.addTask { await runner.stopAndWait() } }
+        }
         try? FileManager.default.removeItem(at: configURL)
     }
 }
